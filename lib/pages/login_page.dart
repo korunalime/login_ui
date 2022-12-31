@@ -1,17 +1,83 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:login_ui/utils/logo_tile.dart';
 import '../utils/button.dart';
 import '../utils/textfields.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   // controllers / username / password
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   // sign in method
-  void signIn() {}
+  void signIn() async {
+    // loading circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    // sign in
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      ); 
+
+      //loading circle off
+      Navigator.pop(context);
+
+    } on FirebaseAuthException catch (e) {
+
+      //loading circle off
+      Navigator.pop(context);
+      
+      // wrong email / show error
+      if (e.code == 'user-not-found') {
+        wrongEmailMessage();
+      }
+
+      // wrong password / show error
+      if (e.code == 'wrong-password') {
+        wrongPasswordMessage();
+      }
+    }
+  }
+
+  // message for wrong data / email
+  void wrongEmailMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Incorrect Email'),
+        );
+      },
+    );
+  }
+
+  // password
+  void wrongPasswordMessage() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const AlertDialog(
+          title: Text('Wrong Password'),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,20 +87,19 @@ class LoginPage extends StatelessWidget {
         child: Center(
           child: SingleChildScrollView(
             reverse: true,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               const SizedBox(height: 60),
-          
+
               // logo / welcome
               const Icon(
                 Icons.lock,
                 size: 90,
                 color: Colors.black,
               ),
-          
+
               const SizedBox(height: 40),
-          
+
               Text(
                 'Welcome back you\'ve been missed!',
                 style: TextStyle(
@@ -42,27 +107,27 @@ class LoginPage extends StatelessWidget {
                   fontSize: 18,
                 ),
               ),
-          
+
               const SizedBox(height: 25),
-          
+
               // username / email field
               MyTextFields(
-                controller: usernameController,
-                hintText: 'Username',
+                controller: emailController,
+                hintText: 'Email',
                 obscureText: false,
               ),
-          
+
               const SizedBox(height: 15),
-          
+
               // password field / forgot password?
               MyTextFields(
                 controller: passwordController,
                 hintText: 'Password',
                 obscureText: true,
               ),
-          
+
               const SizedBox(height: 10),
-          
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
@@ -75,16 +140,16 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
               ),
-          
+
               const SizedBox(height: 25),
-          
+
               // sign in / continue with
               MyButton(
                 onTap: signIn,
               ),
-          
+
               const SizedBox(height: 55),
-          
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Row(
@@ -108,25 +173,25 @@ class LoginPage extends StatelessWidget {
                   ],
                 ),
               ),
-          
+
               const SizedBox(height: 25),
-          
+
               // google and apple sign buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   // apple logo
                   LogoTile(imagePath: 'lib/images/apple-logo.png'),
-          
+
                   SizedBox(width: 10),
-          
+
                   // google logo
                   LogoTile(imagePath: 'lib/images/google-logo.png'),
                 ],
               ),
-          
+
               const SizedBox(height: 25),
-          
+
               // if not a member? register now
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
