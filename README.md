@@ -27,3 +27,12 @@ try {
   }
 }
 ```
+
+## 1.0.2
+
+https://user-images.githubusercontent.com/118524346/210182798-c5c22648-a795-41e9-84d2-b3e5f79a8dac.mp4
+
+- **Added register page with active 'Register now' button**
+* **Directly from our app now you can create a new user**
++ **Added checking of passwords matching, with new textfield 'Confirm password'**
++ **Alert - if password is too short, common**

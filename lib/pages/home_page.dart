@@ -1,5 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -28,8 +30,8 @@ class HomePage extends StatelessWidget {
       ),
       body: Center(
         child: Text(
-          'Logged in as: ' + user.email!,
-          style: TextStyle(fontSize: 22),
+          'Logged in as: ${user.email!}',
+          style: const TextStyle(fontSize: 22),
         ),
       ),
     );

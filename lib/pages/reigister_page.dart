@@ -6,21 +6,22 @@ import '../utils/logo_tile.dart';
 import '../utils/button.dart';
 import '../utils/textfields.dart';
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final Function()? onTap;
-  const LoginPage({super.key, required this.onTap});
+  const RegisterPage({super.key, required this.onTap});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   // controllers / username / password
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
-  // sign in method
-  void signIn() async {
+  // sign up method
+  void signUp() async {
     // loading circle
     showDialog(
       context: context,
@@ -31,12 +32,19 @@ class _LoginPageState extends State<LoginPage> {
       },
     );
 
-    // sign in
+    // sign up
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text,
-        password: passwordController.text,
-      );
+      // checking password
+      if (passwordController.text == confirmPasswordController.text) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text,
+          password: passwordController.text,
+        );
+      } else {
+        // show error, if passwords dont match
+        Navigator.pop(context);
+        return showErrorMessage("Passwords don't match!");
+      }
 
       //loading circle off
       Navigator.pop(context);
@@ -44,37 +52,22 @@ class _LoginPageState extends State<LoginPage> {
       //loading circle off
       Navigator.pop(context);
 
-      // wrong email / show error
-      if (e.code == 'user-not-found') {
-        wrongEmailMessage();
-      }
-
-      // wrong password / show error
-      if (e.code == 'wrong-password') {
-        wrongPasswordMessage();
-      }
+      // show error
+      showErrorMessage(e.code);
     }
   }
 
-  // message for wrong data / email
-  void wrongEmailMessage() {
+  // error message to user
+  void showErrorMessage(String message) {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
-          title: Text('Incorrect Email'),
-        );
-      },
-    );
-  }
-
-  // password
-  void wrongPasswordMessage() {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const AlertDialog(
-          title: Text('Wrong Password'),
+        return AlertDialog(
+          title: Center(
+            child: Text(
+              message,
+            ),
+          ),
         );
       },
     );
@@ -90,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
             reverse: true,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              // logo / welcome
+              // logo / welcome / create an account
               const Icon(
                 Icons.lock,
                 size: 90,
@@ -100,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 40),
 
               Text(
-                'Welcome back you\'ve been missed!',
+                'Create an account!',
                 style: TextStyle(
                   color: Colors.grey[800],
                   fontSize: 18,
@@ -125,27 +118,21 @@ class _LoginPageState extends State<LoginPage> {
                 obscureText: true,
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      'Forgot password?',
-                      style: TextStyle(color: Colors.grey[800]),
-                    ),
-                  ],
-                ),
+              // confirm password field
+              MyTextFields(
+                controller: confirmPasswordController,
+                hintText: 'Confirm Password',
+                obscureText: true,
               ),
 
               const SizedBox(height: 25),
 
-              // sign in / continue with
+              // sign up / continue with
               MyButton(
-                text: 'Sign In',
-                onTap: signIn,
+                text: 'Sign Up',
+                onTap: signUp,
               ),
 
               const SizedBox(height: 55),
@@ -197,14 +184,14 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Not a member?',
+                    'Have an account?',
                     style: TextStyle(color: Colors.grey[800]),
                   ),
                   const SizedBox(width: 5),
                   GestureDetector(
                     onTap: widget.onTap,
                     child: const Text(
-                      'Register now',
+                      'Login now',
                       style: TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
