@@ -36,3 +36,9 @@ https://user-images.githubusercontent.com/118524346/210182798-c5c22648-a795-41e9
 * **Directly from our app now you can create a new user**
 + **Added checking of passwords matching, with new textfield 'Confirm password'**
 + **Alert - if password is too short, common**
+
+## 1.0.3
+
+https://user-images.githubusercontent.com/118524346/210260094-4d16e680-5293-4d82-98be-ecd4b6d44da1.mp4
+
+- **Google sign in button now is active**

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../services/auth_service.dart';
 import '../utils/logo_tile.dart';
 import '../utils/button.dart';
 import '../utils/textfields.dart';
@@ -166,14 +167,22 @@ class _RegisterPageState extends State<RegisterPage> {
               // google and apple sign buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   // apple logo
-                  LogoTile(imagePath: 'lib/images/apple-logo.png'),
+                  LogoTile(
+                    onTap: () {
+                      
+                    },
+                    imagePath: 'lib/images/apple-logo.png',
+                  ),
 
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
 
                   // google logo
-                  LogoTile(imagePath: 'lib/images/google-logo.png'),
+                  LogoTile(
+                    onTap: () => AuthService().signInGoogle(),
+                    imagePath: 'lib/images/google-logo.png',
+                  ),
                 ],
               ),
 
